@@ -145,14 +145,20 @@ void TestKeys::testCreateFileKey()
     dbBuffer.open(QBuffer::ReadWrite);
 
     KeePass2Writer writer;
-    writer.writeDatabase(&dbBuffer, dbOrg);
+    bool writeSuccess = writer.writeDatabase(&dbBuffer, dbOrg);
+    if (writer.hasError()) {
+        QFAIL(writer.errorString().toUtf8().constData());
+    }
+    QVERIFY(writeSuccess);
     dbBuffer.reset();
     delete dbOrg;
 
     KeePass2Reader reader;
     Database* dbRead = reader.readDatabase(&dbBuffer, compositeKey);
+    if (reader.hasError()) {
+        QFAIL(reader.errorString().toUtf8().constData());
+    }
     QVERIFY(dbRead);
-    QVERIFY(!reader.hasError());
     QCOMPARE(dbRead->metadata()->name(), dbName);
     delete dbRead;
 }
