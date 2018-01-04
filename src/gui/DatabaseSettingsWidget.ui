@@ -200,6 +200,9 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
           <property name="text">
            <string>Benchmark 1-second delay</string>
           </property>
@@ -315,11 +318,18 @@
  <tabstops>
   <tabstop>dbNameEdit</tabstop>
   <tabstop>dbDescriptionEdit</tabstop>
+  <tabstop>defaultUsernameEdit</tabstop>
+  <tabstop>algorithmComboBox</tabstop>
+  <tabstop>kdfComboBox</tabstop>
+  <tabstop>transformRoundsSpinBox</tabstop>
+  <tabstop>memorySpinBox</tabstop>
+  <tabstop>parallelismSpinBox</tabstop>
+  <tabstop>recycleBinEnabledCheckBox</tabstop>
   <tabstop>historyMaxItemsCheckBox</tabstop>
   <tabstop>historyMaxItemsSpinBox</tabstop>
   <tabstop>historyMaxSizeCheckBox</tabstop>
   <tabstop>historyMaxSizeSpinBox</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>transformBenchmarkButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>
