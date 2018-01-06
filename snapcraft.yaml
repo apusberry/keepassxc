@@ -41,7 +41,7 @@ parts:
       - libxtst-dev
       - libyubikey-dev
       - libykpers-1-dev
-      - libargon2
+      - libargon2-0-dev
     stage-packages:
       - dbus
       - qttranslations5-l10n # common translations
