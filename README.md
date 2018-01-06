@@ -18,6 +18,7 @@ so please check out your distribution's package list to see if KeePassXC is avai
 
 ## Additional features compared to KeePassX
 - Auto-Type on all three major platforms (Linux, Windows, macOS)
+- Support KDBX4 filetypes
 - Twofish encryption
 - YubiKey challenge-response support
 - TOTP generation

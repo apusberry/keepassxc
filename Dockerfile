@@ -37,6 +37,7 @@ RUN set -x \
         cmake3 \
         g++ \
         libgcrypt20-dev \
+        libargon2 \
         qt${QT5_VERSION}base \
         qt${QT5_VERSION}tools \
         qt${QT5_VERSION}x11extras \

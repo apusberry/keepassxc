@@ -24,6 +24,7 @@ RUN set -x \
       git build-essential clang-3.6 libclang-common-3.6-dev clang-format-3.6 cmake3 make \
       curl ca-certificates gnupg2 \
       libgcrypt20-dev zlib1g-dev libyubikey-dev libykpers-1-dev \
+      libargon2 \
       qttools5-dev \
       qttools5-dev-tools \
       qtbase5-dev \
