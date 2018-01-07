@@ -79,13 +79,13 @@ KeePass2Repair::RepairOutcome KeePass2Repair::repairDatabase(QIODevice* device, 
     QBuffer buffer(&xmlData);
     buffer.open(QIODevice::ReadOnly);
     if ((reader.version() & KeePass2::FILE_VERSION_CRITICAL_MASK) < KeePass2::FILE_VERSION_4) {
-        KdbxXmlReader xmlReader;
+        KdbxXmlReader xmlReader(KeePass2::FILE_VERSION_3);
         xmlReader.readDatabase(&buffer, db.data(), &randomStream);
         hasError = xmlReader.hasError();
     } else {
         auto reader4 = reader.reader().staticCast<Kdbx4Reader>();
         QHash<QString, QByteArray> pool = reader4->binaryPool();
-        KdbxXmlReader xmlReader(pool);
+        KdbxXmlReader xmlReader(KeePass2::FILE_VERSION_4, pool);
         xmlReader.readDatabase(&buffer, db.data(), &randomStream);
         hasError = xmlReader.hasError();
     }

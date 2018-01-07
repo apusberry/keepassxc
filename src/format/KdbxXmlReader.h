@@ -41,8 +41,8 @@ class KdbxXmlReader
 Q_DECLARE_TR_FUNCTIONS(KdbxXmlReader)
 
 public:
-    KdbxXmlReader() = default;
-    explicit KdbxXmlReader(QHash<QString, QByteArray>& binaryPool);
+    explicit KdbxXmlReader(quint32 version);
+    explicit KdbxXmlReader(quint32 version, QHash<QString, QByteArray>& binaryPool);
     virtual ~KdbxXmlReader() = default;
 
     virtual Database* readDatabase(const QString& filename);
@@ -95,6 +95,8 @@ protected:
     virtual Entry* getEntry(const Uuid& uuid);
 
     virtual void raiseError(const QString& errorMessage);
+
+    const quint32 m_kdbxVersion;
 
     bool m_strictMode = false;
 

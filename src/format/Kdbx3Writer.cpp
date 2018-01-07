@@ -23,8 +23,9 @@
 #include "core/Database.h"
 #include "crypto/CryptoHash.h"
 #include "crypto/Random.h"
+#include "format/KeePass2.h"
 #include "format/KeePass2RandomStream.h"
-#include "format/Kdbx3XmlWriter.h"
+#include "format/KdbxXmlWriter.h"
 #include "streams/HashedBlockStream.h"
 #include "streams/QtIOCompressor"
 #include "streams/SymmetricCipherStream.h"
@@ -130,7 +131,7 @@ bool Kdbx3Writer::writeDatabase(QIODevice* device, Database* db)
         return false;
     }
 
-    Kdbx3XmlWriter xmlWriter;
+    KdbxXmlWriter xmlWriter(KeePass2::FILE_VERSION_3);
     xmlWriter.writeDatabase(outputDevice, db, &randomStream, headerHash);
 
     // Explicitly close/reset streams so they are flushed and we can detect

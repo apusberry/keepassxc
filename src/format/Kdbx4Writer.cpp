@@ -25,7 +25,7 @@
 #include "crypto/CryptoHash.h"
 #include "crypto/Random.h"
 #include "format/KeePass2RandomStream.h"
-#include "format/Kdbx4XmlWriter.h"
+#include "format/KdbxXmlWriter.h"
 #include "streams/QtIOCompressor"
 #include "streams/SymmetricCipherStream.h"
 
@@ -152,25 +152,12 @@ bool Kdbx4Writer::writeDatabase(QIODevice* device, Database* db)
 
     Q_ASSERT(outputDevice);
 
-    QHash<QByteArray, int> idMap;
     CHECK_RETURN_FALSE(writeInnerHeaderField(outputDevice, KeePass2::InnerHeaderFieldID::InnerRandomStreamID,
                                              Endian::sizedIntToBytes(static_cast<int>(KeePass2::ProtectedStreamAlgo::ChaCha20),
                                                                      KeePass2::BYTEORDER)));
     CHECK_RETURN_FALSE(writeInnerHeaderField(outputDevice, KeePass2::InnerHeaderFieldID::InnerRandomStreamKey,
                                              protectedStreamKey));
-    const QList<Entry*> allEntries = db->rootGroup()->entriesRecursive(true);
-    int nextId = 0;
 
-    for (Entry* entry : allEntries) {
-        const QList<QString> attachmentKeys = entry->attachments()->keys();
-        for (const QString& key : attachmentKeys) {
-            QByteArray data = entry->attachments()->value(key);
-            if (!idMap.contains(data)) {
-                CHECK_RETURN_FALSE(writeBinary(outputDevice, data));
-                idMap.insert(data, nextId++);
-            }
-        }
-    }
     CHECK_RETURN_FALSE(writeInnerHeaderField(outputDevice, KeePass2::InnerHeaderFieldID::End, QByteArray()));
 
     KeePass2RandomStream randomStream(KeePass2::ProtectedStreamAlgo::ChaCha20);
@@ -179,7 +166,7 @@ bool Kdbx4Writer::writeDatabase(QIODevice* device, Database* db)
         return false;
     }
 
-    Kdbx4XmlWriter xmlWriter(KeePass2::FILE_VERSION_4, idMap);
+    KdbxXmlWriter xmlWriter(KeePass2::FILE_VERSION_4);
     xmlWriter.writeDatabase(outputDevice, db, &randomStream, headerHash);
 
     // Explicitly close/reset streams so they are flushed and we can detect

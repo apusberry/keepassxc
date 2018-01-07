@@ -141,7 +141,7 @@ Database* Kdbx4Reader::readDatabaseImpl(QIODevice* device, const QByteArray& hea
 
     Q_ASSERT(xmlDevice);
 
-    KdbxXmlReader xmlReader(m_binaryPool);
+    KdbxXmlReader xmlReader(KeePass2::FILE_VERSION_4, m_binaryPool);
     xmlReader.readDatabase(xmlDevice, m_db.data(), &randomStream);
 
     if (xmlReader.hasError()) {
