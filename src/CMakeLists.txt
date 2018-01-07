@@ -93,11 +93,9 @@ set(keepassx_SOURCES
     format/KeePass2Writer.cpp
     format/Kdbx3Reader.cpp
     format/Kdbx3Writer.cpp
-    format/Kdbx3XmlReader.cpp
     format/Kdbx3XmlWriter.cpp
     format/Kdbx4Reader.cpp
     format/Kdbx4Writer.cpp
-    format/Kdbx4XmlReader.cpp
     format/Kdbx4XmlWriter.cpp
     gui/AboutDialog.cpp
     gui/Application.cpp

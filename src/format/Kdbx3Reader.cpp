@@ -18,16 +18,16 @@
 
 #include "Kdbx3Reader.h"
 
-#include <QBuffer>
-
-#include "core/Database.h"
+#include "core/Group.h"
 #include "core/Endian.h"
 #include "crypto/CryptoHash.h"
 #include "format/KeePass2RandomStream.h"
-#include "format/Kdbx3XmlReader.h"
+#include "format/KdbxXmlReader.h"
 #include "streams/HashedBlockStream.h"
 #include "streams/QtIOCompressor"
 #include "streams/SymmetricCipherStream.h"
+
+#include <QBuffer>
 
 Database* Kdbx3Reader::readDatabaseImpl(QIODevice* device, const QByteArray& headerData,
                                         const CompositeKey& key, bool keepDatabase)
@@ -118,7 +118,7 @@ Database* Kdbx3Reader::readDatabaseImpl(QIODevice* device, const QByteArray& hea
 
     Q_ASSERT(xmlDevice);
 
-    Kdbx3XmlReader xmlReader;
+    KdbxXmlReader xmlReader;
     xmlReader.readDatabase(xmlDevice, m_db.data(), &randomStream);
 
     if (xmlReader.hasError()) {

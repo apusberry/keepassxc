@@ -25,9 +25,8 @@
 #include "core/Group.h"
 #include "core/Metadata.h"
 #include "crypto/Crypto.h"
-#include "format/Kdbx3XmlReader.h"
+#include "format/KdbxXmlReader.h"
 #include "format/Kdbx3XmlWriter.h"
-#include "format/Kdbx4XmlReader.h"
 #include "format/Kdbx4XmlWriter.h"
 #include "config-keepassx-tests.h"
 
@@ -83,7 +82,7 @@ void TestKdbx3XmlReader::initTestCase()
 {
     QVERIFY(Crypto::init());
 
-    Kdbx3XmlReader reader;
+    KdbxXmlReader reader;
     reader.setStrictMode(true);
     QString xmlFile = QString(KEEPASSX_TEST_DATA_DIR).append("/NewDatabase.xml");
     m_db = reader.readDatabase(xmlFile);
@@ -95,7 +94,7 @@ void TestKdbx4XmlReader::initTestCase()
 {
     QVERIFY(Crypto::init());
 
-    Kdbx4XmlReader reader;
+    KdbxXmlReader reader;
     reader.setStrictMode(true);
     QString xmlFile = QString(KEEPASSX_TEST_DATA_DIR).append("/NewDatabase.xml");
     m_db = reader.readDatabase(xmlFile);
@@ -105,7 +104,7 @@ void TestKdbx4XmlReader::initTestCase()
 
 void TestKdbx3XmlReader::readDatabase(QString path, bool strictMode, Database*& db, bool& hasError, QString& errorString)
 {
-    Kdbx3XmlReader reader;
+    KdbxXmlReader reader;
     reader.setStrictMode(strictMode);
     db = reader.readDatabase(path);
     hasError = reader.hasError();
@@ -114,7 +113,7 @@ void TestKdbx3XmlReader::readDatabase(QString path, bool strictMode, Database*& 
 
 void TestKdbx3XmlReader::readDatabase(QBuffer* buf, bool strictMode, Database*& db, bool& hasError, QString& errorString)
 {
-    Kdbx3XmlReader reader;
+    KdbxXmlReader reader;
     reader.setStrictMode(strictMode);
     db = reader.readDatabase(buf);
     hasError = reader.hasError();
@@ -131,7 +130,7 @@ void TestKdbx3XmlReader::writeDatabase(QBuffer* buf, Database* db, bool& hasErro
 
 void TestKdbx4XmlReader::readDatabase(QString path, bool strictMode, Database*& db, bool& hasError, QString& errorString)
 {
-    Kdbx4XmlReader reader;
+    KdbxXmlReader reader;
     reader.setStrictMode(strictMode);
     db = reader.readDatabase(path);
     hasError = reader.hasError();
@@ -140,7 +139,7 @@ void TestKdbx4XmlReader::readDatabase(QString path, bool strictMode, Database*& 
 
 void TestKdbx4XmlReader::readDatabase(QBuffer* buf, bool strictMode, Database*& db, bool& hasError, QString& errorString)
 {
-    Kdbx4XmlReader reader;
+    KdbxXmlReader reader;
     reader.setStrictMode(strictMode);
     db = reader.readDatabase(buf);
     hasError = reader.hasError();

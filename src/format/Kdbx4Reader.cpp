@@ -19,12 +19,13 @@
 
 #include <QBuffer>
 
-#include "streams/HmacBlockStream.h"
+#include "core/Group.h"
 #include "core/Database.h"
 #include "core/Endian.h"
 #include "crypto/CryptoHash.h"
 #include "format/KeePass2RandomStream.h"
-#include "format/Kdbx4XmlReader.h"
+#include "format/KdbxXmlReader.h"
+#include "streams/HmacBlockStream.h"
 #include "streams/QtIOCompressor"
 #include "streams/SymmetricCipherStream.h"
 
@@ -140,7 +141,7 @@ Database* Kdbx4Reader::readDatabaseImpl(QIODevice* device, const QByteArray& hea
 
     Q_ASSERT(xmlDevice);
 
-    Kdbx4XmlReader xmlReader(m_binaryPool);
+    KdbxXmlReader xmlReader(m_binaryPool);
     xmlReader.readDatabase(xmlDevice, m_db.data(), &randomStream);
 
     if (xmlReader.hasError()) {
