@@ -41,7 +41,7 @@ KeePass2Repair::RepairOutcome KeePass2Repair::repairDatabase(QIODevice* device, 
         return qMakePair(NothingTodo, nullptr);
     }
 
-    QByteArray xmlData = reader.xmlData();
+    QByteArray xmlData = reader.reader()->xmlData();
     if (!db || xmlData.isEmpty()) {
         m_errorStr = reader.errorString();
         return qMakePair(UnableToOpen, nullptr);
@@ -74,8 +74,8 @@ KeePass2Repair::RepairOutcome KeePass2Repair::repairDatabase(QIODevice* device, 
         return qMakePair(RepairFailed, nullptr);
     }
 
-    KeePass2RandomStream randomStream(reader.protectedStreamAlgo());
-    randomStream.init(reader.streamKey());
+    KeePass2RandomStream randomStream(reader.reader()->protectedStreamAlgo());
+    randomStream.init(reader.reader()->streamKey());
     bool hasError;
 
     QBuffer buffer(&xmlData);

@@ -85,6 +85,10 @@ set(keepassx_SOURCES
     format/KeePass2.cpp
     format/KeePass2RandomStream.cpp
     format/KeePass2Repair.cpp
+    format/KdbxReader.cpp
+    format/KdbxWriter.cpp
+    format/KdbxXmlReader.cpp
+    format/KdbxXmlWriter.cpp
     format/KeePass2Reader.cpp
     format/KeePass2Writer.cpp
     format/Kdbx3Reader.cpp
