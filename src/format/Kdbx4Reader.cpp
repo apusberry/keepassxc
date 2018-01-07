@@ -47,7 +47,7 @@ Database* Kdbx4Reader::readDatabaseImpl(QIODevice* device, const QByteArray& hea
         return nullptr;
     }
 
-    if (!m_db->setKey(key, false, false, &m_masterSeed)) {
+    if (!m_db->setKey(key, false, false)) {
         raiseError(tr("Unable to calculate master key"));
         return nullptr;
     }

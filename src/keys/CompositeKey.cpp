@@ -19,6 +19,7 @@
 #include "CompositeKey.h"
 #include <QFile>
 #include <QtConcurrent>
+#include <format/KeePass2.h>
 
 #include "core/Global.h"
 #include "crypto/CryptoHash.h"
@@ -75,10 +76,12 @@ CompositeKey& CompositeKey::operator=(const CompositeKey& key)
 
 /**
  * Get raw key hash as bytes.
- * The key hash does not contain any challenge-response components. To include those,
- * use \link CompositeKey::rawKey() instead.
  *
- * @param masterSeed master seed to challenge or nullptr to exclude challenge-response components
+ * The key hash does not contain contributions by challenge-response components for
+ * backwards compatibility with KeePassXC's pre-KDBX4 challenge-response
+ * implementation. To include challenge-response in the raw key,
+ * use \link CompositeKey::rawKey(const QByteArray*) instead.
+ *
  * @return key hash
  */
 QByteArray CompositeKey::rawKey() const
@@ -88,13 +91,14 @@ QByteArray CompositeKey::rawKey() const
 
 /**
  * Get raw key hash as bytes.
- * If <tt>masterSeed</tt> is a nullptr, the returned key hash does not include any
- * challenge-response components.
  *
- * @param masterSeed master seed to challenge or nullptr to exclude challenge-response components
+ * Challenge-response key components will use the provided <tt>transformSeed</tt>
+ * as a challenge to acquire their key contribution.
+ *
+ * @param transformSeed transform seed to challenge or nullptr to exclude challenge-response components
  * @return key hash
  */
-QByteArray CompositeKey::rawKey(const QByteArray* masterSeed) const
+QByteArray CompositeKey::rawKey(const QByteArray* transformSeed) const
 {
     CryptoHash cryptoHash(CryptoHash::Sha256);
 
@@ -102,9 +106,9 @@ QByteArray CompositeKey::rawKey(const QByteArray* masterSeed) const
         cryptoHash.addData(key->rawKey());
     }
 
-    if (masterSeed) {
+    if (transformSeed) {
         QByteArray challengeResult;
-        challenge(*masterSeed, challengeResult);
+        challenge(*transformSeed, challengeResult);
         cryptoHash.addData(challengeResult);
     }
 
@@ -113,17 +117,27 @@ QByteArray CompositeKey::rawKey(const QByteArray* masterSeed) const
 
 /**
  * Transform this composite key.
- * If <tt>masterSeed</tt> is not a nullptr, the transformed key will include all
- * key components, including challenge-response keys.
+ *
+ * If using AES-KDF as transform function, the transformed key will not include
+ * any challenge-response components. Only static key components will be hashed
+ * for backwards-compatibility with KeePassXC's KDBX3 implementation, which added
+ * challenge response key components after key transformation.
+ * KDBX4+ KDFs transform the whole key including challenge-response components.
  *
  * @param kdf key derivation function
- * @param masterSeed master seed to challenge
- * @param result transformed key
+ * @param result transformed key hash
  * @return true on success
  */
-bool CompositeKey::transform(const Kdf& kdf, QByteArray& result, const QByteArray* masterSeed) const
+bool CompositeKey::transform(const Kdf& kdf, QByteArray& result) const
 {
-    return kdf.transform(rawKey(masterSeed), result);
+    if (kdf.uuid() == KeePass2::KDF_AES) {
+        // legacy KDBX3 AES-KDF, challenge response is added later to the hash
+        return kdf.transform(rawKey(), result);
+    }
+
+    QByteArray seed = kdf.seed();
+    Q_ASSERT(!seed.isEmpty());
+    return kdf.transform(rawKey(&seed), result);
 }
 
 bool CompositeKey::challenge(const QByteArray& seed, QByteArray& result) const
