@@ -43,8 +43,8 @@ public:
 
     bool saveXml() const;
     void setSaveXml(bool save);
-    QSharedPointer<KdbxReader> reader() const;
 
+    QSharedPointer<KdbxReader> reader() const;
     quint32 version() const;
 private:
     void raiseError(const QString& errorMessage);
@@ -54,7 +54,7 @@ private:
     QString m_errorStr = "";
 
     QSharedPointer<KdbxReader> m_reader;
-    quint32 m_version;
+    quint32 m_version = 0;
 };
 
 #endif // KEEPASSX_KEEPASS2READER_H
