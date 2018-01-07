@@ -255,7 +255,18 @@ void Database::setCompressionAlgo(Database::CompressionAlgorithm algo)
     m_data.compressionAlgo = algo;
 }
 
-bool Database::setKey(const CompositeKey& key, bool updateChangedTime, bool updateTransformSalt)
+/**
+ * Set and transform a new encryption key.
+ * If <tt>masterSeed</tt> is not a nullptr, the transformed key will also include
+ * any challenge-response components
+ *
+ * @param key key to set and transform
+ * @param updateChangedTime true to update database change time
+ * @param updateTransformSalt true to update the transform salt
+ * @param masterSeed non-nullptr to include challenge-response components
+ * @return
+ */
+bool Database::setKey(const CompositeKey& key, bool updateChangedTime, bool updateTransformSalt, QByteArray* masterSeed)
 {
     if (updateTransformSalt) {
         m_data.kdf->randomizeSeed();
@@ -263,7 +274,7 @@ bool Database::setKey(const CompositeKey& key, bool updateChangedTime, bool upda
 
     QByteArray oldTransformedMasterKey = m_data.transformedMasterKey;
     QByteArray transformedMasterKey;
-    if (!key.transform(*m_data.kdf, transformedMasterKey)) {
+    if (!key.transform(*m_data.kdf, transformedMasterKey, masterSeed)) {
         return false;
     }
 

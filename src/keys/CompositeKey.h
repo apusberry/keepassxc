@@ -32,14 +32,15 @@ class CompositeKey : public Key
 public:
     CompositeKey();
     CompositeKey(const CompositeKey& key);
-    ~CompositeKey();
+    ~CompositeKey() override;
     void clear();
     bool isEmpty() const;
-    CompositeKey* clone() const;
+    CompositeKey* clone() const override;
     CompositeKey& operator=(const CompositeKey& key);
 
-    QByteArray rawKey() const;
-    bool transform(const Kdf& kdf, QByteArray& result) const Q_REQUIRED_RESULT;
+    QByteArray rawKey() const override;
+    QByteArray rawKey(const QByteArray* masterSeed) const;
+    bool transform(const Kdf& kdf, QByteArray& result, const QByteArray* masterSeed = nullptr) const Q_REQUIRED_RESULT;
     bool challenge(const QByteArray& seed, QByteArray &result) const;
 
     void addKey(const Key& key);

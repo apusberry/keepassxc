@@ -73,7 +73,28 @@ CompositeKey& CompositeKey::operator=(const CompositeKey& key)
     return *this;
 }
 
+/**
+ * Get raw key hash as bytes.
+ * The key hash does not contain any challenge-response components. To include those,
+ * use \link CompositeKey::rawKey() instead.
+ *
+ * @param masterSeed master seed to challenge or nullptr to exclude challenge-response components
+ * @return key hash
+ */
 QByteArray CompositeKey::rawKey() const
+{
+    return rawKey(nullptr);
+}
+
+/**
+ * Get raw key hash as bytes.
+ * If <tt>masterSeed</tt> is a nullptr, the returned key hash does not include any
+ * challenge-response components.
+ *
+ * @param masterSeed master seed to challenge or nullptr to exclude challenge-response components
+ * @return key hash
+ */
+QByteArray CompositeKey::rawKey(const QByteArray* masterSeed) const
 {
     CryptoHash cryptoHash(CryptoHash::Sha256);
 
@@ -81,12 +102,28 @@ QByteArray CompositeKey::rawKey() const
         cryptoHash.addData(key->rawKey());
     }
 
+    if (masterSeed) {
+        QByteArray challengeResult;
+        challenge(*masterSeed, challengeResult);
+        cryptoHash.addData(challengeResult);
+    }
+
     return cryptoHash.result();
 }
 
-bool CompositeKey::transform(const Kdf& kdf, QByteArray& result) const
+/**
+ * Transform this composite key.
+ * If <tt>masterSeed</tt> is not a nullptr, the transformed key will include all
+ * key components, including challenge-response keys.
+ *
+ * @param kdf key derivation function
+ * @param masterSeed master seed to challenge
+ * @param result transformed key
+ * @return true on success
+ */
+bool CompositeKey::transform(const Kdf& kdf, QByteArray& result, const QByteArray* masterSeed) const
 {
-    return kdf.transform(rawKey(), result);
+    return kdf.transform(rawKey(masterSeed), result);
 }
 
 bool CompositeKey::challenge(const QByteArray& seed, QByteArray& result) const
@@ -103,6 +140,7 @@ bool CompositeKey::challenge(const QByteArray& seed, QByteArray& result) const
     for (const auto key : m_challengeResponseKeys) {
         // if the device isn't present or fails, return an error
         if (!key->challenge(seed)) {
+            qWarning("Failed to issue challenge");
             return false;
         }
         cryptoHash.addData(key->rawKey());

@@ -103,7 +103,7 @@ public:
     void setKdf(QSharedPointer<Kdf> kdf);
     void setPublicCustomData(QByteArray data);
     bool setKey(const CompositeKey& key, bool updateChangedTime = true,
-                bool updateTransformSalt = false);
+                bool updateTransformSalt = false, QByteArray* masterSeed = nullptr);
     bool hasKey() const;
     bool verifyKey(const CompositeKey& key) const;
     void recycleEntry(Entry* entry);
