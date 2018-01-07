@@ -67,7 +67,7 @@ protected:
     template <typename SizedQInt>
     bool writeHeaderField(QIODevice* device, KeePass2::HeaderFieldID fieldId, const QByteArray& data)
     {
-        Q_ASSERT(static_cast<unsigned long>(data.size()) < (1ul << (sizeof(SizedQInt) * 8)));
+        Q_ASSERT(static_cast<unsigned long>(data.size()) < (1ull << (sizeof(SizedQInt) * 8)));
 
         QByteArray fieldIdArr;
         fieldIdArr[0] = static_cast<char>(fieldId);
